@@ -1,0 +1,72 @@
+type User {
+  id: String!
+  username: String!
+  email: String!
+  enrollmentDate: String!
+  posts: [Post]!
+}
+
+input SignUpUserInput {
+  username: String!
+  email: String!
+}
+
+input EditUserInput {
+  username: String!
+  email: String!
+}
+
+type Post {
+  id: String!
+  title: String!
+  body: String!
+  publishDate: String!
+  author: User!
+  likes: Int!
+}
+
+input PublishPostInput {
+  authorID: String!
+  title: String!
+  body: String!
+}
+
+input LikePostInput {
+  likerID: String!
+  postID: String!
+}
+
+input SubscriptionInput {
+  subscriberID: String!
+  publisherID: String!
+}
+
+type MutationResult {
+  accepted: Boolean!
+  failureReason: String
+}
+
+type Query {
+  user(username: String!): User
+  author(postID: String!): User
+  users: [User]!
+  mostPopular(limit: Int!): [User]!
+  mostProlific(limit: Int!): [User]!
+
+  postsByAuthor(authorID: String!): [Post]!
+  recentPosts(limit: Int!): [Post]!
+  popularPosts(limit: Int!): [Post]!
+}
+
+type Mutation {
+  signUpUser(signUpUserInput: SignUpUserInput!): MutationResult!
+  editUser(editUserInput: EditUserInput!): MutationResult!
+  publishPost(publishPostInput: PublishPostInput!): MutationResult!
+  likePost(likePostInput: LikePostInput!): MutationResult!
+  subscribe(subscriptionInput: SubscriptionInput!): MutationResult!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
