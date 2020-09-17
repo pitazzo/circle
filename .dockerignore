@@ -1,0 +1,5 @@
+circle-core/node_modules
+gateway-service/node_modules
+users-service/node_modules
+content-service/node_modules
+notifications-service/node_modules
