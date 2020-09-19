@@ -4,6 +4,7 @@ import { AMQPServiceModule } from 'circle-core';
 import { HandlersModule } from './handlers/handlers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Publisher } from './shared/domain/publisher.entity';
+import { MailService } from './mail.service';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { Publisher } from './shared/domain/publisher.entity';
     }),
     TypeOrmModule.forFeature([Publisher]),
   ],
-  providers: [PublishersService],
+  providers: [PublishersService, MailService],
 })
 export class AppModule {}

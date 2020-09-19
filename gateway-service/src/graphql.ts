@@ -57,7 +57,7 @@ export interface MutationResult {
 export interface IQuery {
     user(username: string): User | Promise<User>;
     author(postID: string): User | Promise<User>;
-    users(): User[] | Promise<User[]>;
+    users(limit: number): User[] | Promise<User[]>;
     mostPopular(limit: number): User[] | Promise<User[]>;
     mostProlific(limit: number): User[] | Promise<User[]>;
     postsByAuthor(authorID: string): Post[] | Promise<Post[]>;

@@ -1,9 +1,10 @@
 FROM node:14 AS builder
 
+ENV PORT=3000
 ARG RABBITMQ_URL
 
 WORKDIR /app/circle-core
-RUN npm install -g rexreplace typescript
+RUN npm install -g rexreplace typescript javascript-obfuscator
 COPY ./circle-core .
 RUN rr RABBITMQ_URL $RABBITMQ_URL ./src/infraestructure/amqp-service/amqp-service.ts
 RUN npm install && tsc
@@ -28,7 +29,7 @@ COPY --from=builder /app/circle-core/dist ./circle-core/dist
 COPY --from=builder /app/gateway-service/.env ./gateway-service/.env
 COPY --from=builder /app/gateway-service/src/core/schema.graphql ./gateway-service/src/core/schema.graphql
 
-EXPOSE 3000
+EXPOSE $PORT
 
 WORKDIR /app/gateway-service
 CMD ["npm", "run", "start:prod"]

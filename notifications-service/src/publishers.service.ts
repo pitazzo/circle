@@ -10,7 +10,7 @@ import {
   Title,
   Body,
 } from 'circle-core';
-import { Subscriber } from 'rxjs';
+import { MailService } from './mail.service';
 
 @Injectable()
 export class PublishersService {
@@ -18,6 +18,7 @@ export class PublishersService {
     @InjectRepository(Publisher)
     private publishersRepository: Repository<Publisher>,
     private amqpService: AMQPService,
+    private mailService: MailService,
   ) {}
 
   public async susbcribe(subscriberID: ID, publisherID: ID): Promise<void> {
@@ -67,11 +68,17 @@ export class PublishersService {
         .findOne({
           publisherID: ID.create(subscriberID).getValue(),
         })
-        .then(subscriber =>
-          console.log(
-            'Enviando mail a ' + subscriber.email.value + ' por ser suscriptor',
-          ),
-        );
+        .then(subscriber => {
+          this.mailService.sendMessage(
+            subscriber.email,
+            '¡Nueva publicación de ' + publisherID.value + '!',
+            publisherID.value +
+              ' ha añadido una nueva publicación llamada ' +
+              title.value +
+              '.\n\n' +
+              body.value,
+          );
+        });
     });
   }
 
@@ -83,7 +90,11 @@ export class PublishersService {
     const publisher = await this.publishersRepository.findOne({
       publisherID: publisherID,
     });
-    console.log('Enviando mail a ' + publisher.email.value + ' por recibir un like');
+    this.mailService.sendMessage(
+      publisher.email,
+      '¡Nuevo like de ' + likerID.value + '!',
+      'A ' + likerID.value + 'le ha gustado tu post ' + postID.value,
+    );
   }
 
   public async notifitySubscription(
@@ -93,6 +104,10 @@ export class PublishersService {
     const publisher = await this.publishersRepository.findOne({
       publisherID: publisherID,
     });
-    console.log('Enviando mail a ' + publisher.email.value + ' por nuevo suscriptor');
+    this.mailService.sendMessage(
+      publisher.email,
+      '¡Nuevo suscriptor!',
+      subscriberID.value + ' se ha suscrito a tus publicaciones',
+    );
   }
 }

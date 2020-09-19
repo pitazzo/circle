@@ -1,11 +1,17 @@
 FROM node:14 AS builder
 
 ARG RABBITMQ_URL
+
 ARG DB_HOST
 ARG DB_PORT
 ARG DB_USER
 ARG DB_PASSWORD
 ARG DB_DATABASE
+
+ARG MAIL_HOST
+ARG MAIL_PORT
+ARG MAIL_USER
+ARG MAIL_PASSWORD
 
 WORKDIR /app/circle-core
 RUN npm install -g rexreplace typescript javascript-obfuscator
@@ -18,6 +24,7 @@ RUN javascript-obfuscator dist --output obfuscated && rm -rf dist && mv obfuscat
 WORKDIR /app/notifications-service
 COPY ./notifications-service .
 RUN rr DB_HOST $DB_HOST ./src/app.module.ts && rr DB_PORT $DB_PORT ./src/app.module.ts && rr DB_USER $DB_USER ./src/app.module.ts && rr DB_PASSWORD $DB_PASSWORD ./src/app.module.ts && rr DB_DATABASE $DB_DATABASE ./src/app.module.ts
+RUN rr MAIL_HOST $MAIL_HOST ./src/mail.service.ts && rr MAIL_PORT $MAIL_PORT ./src/mail.service.ts && rr MAIL_USER $MAIL_USER ./src/mail.service.ts && rr MAIL_PASSWORD $MAIL_PASSWORD ./src/mail.service.ts
 RUN npm install
 RUN npm run build
 RUN javascript-obfuscator dist --output obfuscated && rm -rf dist && mv obfuscated/dist .

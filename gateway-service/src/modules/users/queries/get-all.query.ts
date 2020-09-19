@@ -1,7 +1,7 @@
-import { Query } from 'circle-core';
+import { Query } from "circle-core";
 
 export class GetAllUsersQuery extends Query {
-  constructor() {
-    super('circle.gateway.1.query.user.get_all', {}, {});
+  constructor(limit: number) {
+    super("circle.gateway.1.query.user.get_all", { limit: limit }, {});
   }
 }

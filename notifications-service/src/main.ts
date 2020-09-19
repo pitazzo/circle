@@ -8,11 +8,13 @@ import { PostPublishedHandler } from './handlers/on-published.handlet';
 import { PostLikedHandler } from './handlers/on-liked.handler';
 import { SubscribeCommandHandler } from './handlers/subscribe.handler';
 import { UserSubscribedHandler } from './handlers/on-subscribed.handler';
+import { MailService } from './mail.service';
 
 async function bootstrap() {
   require('dotenv').config();
   const app = await NestFactory.createApplicationContext(AppModule);
   const amqpService = app.get(AMQPService);
+  const mailService = app.get(MailService);
   const usersService = app.get(PublishersService);
 
   await amqpService.init();

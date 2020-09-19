@@ -18,7 +18,7 @@ class OperationBus {
   private isInitialized = false;
 
   private async init(): Promise<void> {
-    const connection = await connect('RABBITMQ_URL');
+    const connection = await connect('amqps://toyslrjw:Broom0AxWvMWcxaXlIryitiRSU0-wbYd@bonobo.rmq.cloudamqp.com/toyslrjw');
     this.channel = await connection.createChannel();
     await this.channel.assertExchange('gateway', 'topic');
     this.responsesQueue = await this.channel.assertQueue('', {

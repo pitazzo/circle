@@ -1,27 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { Username } from 'src/shared/domain/value-objects/username';
-import { Result } from 'circle-core/dist/infraestructure/result';
-import { User } from 'src/shared/domain/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { Username } from "src/shared/domain/value-objects/username";
+import { Result } from "circle-core/dist/infraestructure/result";
+import { User } from "src/shared/domain/user.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import {
   Email,
   AMQPService,
   UserSignedUpEvent,
   ID,
   UserEditedEvent,
-} from 'circle-core';
+} from "circle-core";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private amqpService: AMQPService,
+    private amqpService: AMQPService
   ) {}
 
-  public async findAll(): Promise<Result<User[]>> {
-    const users = await this.usersRepository.find();
+  public async findAll(limit: number): Promise<Result<User[]>> {
+    const users = await this.usersRepository
+      .createQueryBuilder()
+      .limit(limit)
+      .getMany();
     return Result.ok<User[]>(users);
   }
 
@@ -32,7 +35,7 @@ export class UsersService {
     if (result) {
       return Result.ok<User>(result);
     }
-    return Result.fail<User>('Unknown user ' + username.value);
+    return Result.fail<User>("Unknown user " + username.value);
   }
 
   public async findAuthor(postID: ID): Promise<Result<User>> {
@@ -44,13 +47,13 @@ export class UsersService {
     if (result) {
       return Result.ok<User>(result);
     }
-    return Result.fail<User>('Unknown author');
+    return Result.fail<User>("Unknown author");
   }
 
   public async getMostPopular(limit: number): Promise<Result<User[]>> {
     const users = await this.usersRepository
       .createQueryBuilder()
-      .orderBy('"subscribersAmount"', 'DESC')
+      .orderBy('"subscribersAmount"', "DESC")
       .limit(limit)
       .getMany();
     return Result.ok<User[]>(users);
@@ -59,7 +62,7 @@ export class UsersService {
   public async getMostProlific(limit: number): Promise<Result<User[]>> {
     const users = await this.usersRepository
       .createQueryBuilder()
-      .orderBy('"postsAmount"', 'DESC')
+      .orderBy('"postsAmount"', "DESC")
       .limit(limit)
       .getMany();
     return Result.ok<User[]>(users);
@@ -71,7 +74,7 @@ export class UsersService {
       author.addPost(postID);
       this.usersRepository.save(author);
     } else {
-      console.error('Unknown author ' + authorID.value);
+      console.error("Unknown author " + authorID.value);
     }
   }
 
@@ -81,24 +84,21 @@ export class UsersService {
       author.addSubscriber();
       this.usersRepository.save(author);
     } else {
-      console.error('Unknown author ' + authorID.value);
+      console.error("Unknown author " + authorID.value);
     }
   }
 
-  public async edit(
-    username: Username,
-    newEmail: Email,
-  ): Promise<void> {
+  public async edit(username: Username, newEmail: Email): Promise<void> {
     const user = await this.usersRepository.findOne({ username: username });
     if (user) {
       user.updateEmail(newEmail);
-      this.usersRepository.save(user).then(user => {
+      this.usersRepository.save(user).then((user) => {
         this.amqpService.publishEvent(
           new UserEditedEvent(
             user.getID().value,
             user.username.value,
-            user.email.value,
-          ),
+            user.email.value
+          )
         );
       });
     }
@@ -112,13 +112,13 @@ export class UsersService {
       });
       const sameEmail = await this.usersRepository.count({ email: email });
       if (sameEmail == 0 && sameUsername == 0) {
-        this.usersRepository.save(newUser.getValue()).then(user => {
+        this.usersRepository.save(newUser.getValue()).then((user) => {
           this.amqpService.publishEvent(
             new UserSignedUpEvent(
               user.getID().value,
               user.username.value,
-              user.email.value,
-            ),
+              user.email.value
+            )
           );
         });
       }

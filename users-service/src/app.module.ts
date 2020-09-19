@@ -11,15 +11,16 @@ import { User } from './shared/domain/user.entity';
     HandlersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'DB_HOST',
-      port: parseInt('DB_PORT'),
-      username: 'DB_USER',
-      password: 'DB_PASSWORD',
-      database: 'DB_DATABASE',
+      host: 'ec2-54-246-85-151.eu-west-1.compute.amazonaws.com',
+      port: parseInt('5432'),
+      username: 'kavchasunvmsce',
+      password: '63a96f93244f3ad5dadb8f714a1cdf2eb8cbe877a5efad596e2aa3ce93bc7d2d',
+      database: 'dau99oubdpj6ra',
       entities: ['dist/**/*.entity{.ts,.js}'],
       ssl: {
         rejectUnauthorized: false,
       },
+      synchronize: true
     }),
     TypeOrmModule.forFeature([User]),
   ],
