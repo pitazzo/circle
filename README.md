@@ -1,6 +1,6 @@
 # Circle
 Este repositorio contiene el código fuente y ficheros de configuración de Circle. Circle es la prueba de concepto asociada al Trabajo Fin de Grado
-"Arquitecturas de microservicios sobre inafraestructuras distribuidas heterogéneas: una prueba de concepto". En él, se pretende estudiar la viabilidad
+*"Arquitecturas de microservicios sobre inafraestructuras distribuidas heterogéneas: una prueba de concepto"*. En él, se pretende estudiar la viabilidad
 de la "arquitectura socializada".
 
 ## Probar el sistema
