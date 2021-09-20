@@ -1,5 +1,5 @@
 # Circle
-This repo contains the source code and configuration files for Circle. Circle is the proof of concept for the "socialized architecture". The goal is to study the feasibility of the "socialized architecture".
+This repo contains the source code and configuration files for Circle, the proof of concept for the "socialized architecture". Our goal is to study the feasibility of the "socialized architecture".
 
 ## To try the system
 For trying out the system, with demonstrative purposes, follow the next steps
